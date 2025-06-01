@@ -1,27 +1,21 @@
-# Projeto: Pipeline de Dados com DBT + DuckDB
+Projeto: Pipeline de Dados com DBT + DuckDB
 
-Este projeto implementa um pipeline de dados utilizando o **dbt (Data Build Tool)** com o **DuckDB** como engine local. O pipeline processa dados brutos em camadas (raw → bronze → silver → gold), com organização modular e testes de qualidade.
+Este projeto implementa um pipeline de dados utilizando o dbt (Data Build Tool) com o DuckDB como engine local. O pipeline processa dados brutos em camadas (raw → bronze → silver → gold), com organização modular e testes de qualidade.
+✅ Etapas Realizadas
+1. Instalação do Ambiente e Criação do Projeto
 
----
-
-## ✅ Etapas Realizadas
-
-### 1. Instalação do Ambiente
-
-```bash
 # Instale o dbt com suporte a DuckDB
 pip install dbt-duckdb
 
-2. Criação do Projeto
-
+# Crie o projeto dbt
 dbt init meu_pipeline_duckdb
 cd meu_pipeline_duckdb
 
-3. Estrutura Inicial de Pastas e Models
+2. Estrutura Inicial de Pastas e Models
 
 mkdir -p models/raw models/bronze models/silver models/gold
 
-4. Carga do Dado Bruto (Raw)
+3. Carga do Dado Bruto (Raw)
 
 Criado o arquivo raw_data.csv com o conteúdo:
 
@@ -36,7 +30,7 @@ E o modelo load_raw_data.sql:
 SELECT * 
 FROM read_csv_auto('/home/magno/dados/raw_data.csv')
 
-5. Transformação Bronze
+4. Transformação Bronze
 
 Arquivo: models/bronze/transform_data.sql
 
@@ -49,7 +43,7 @@ SELECT
     age
 FROM raw
 
-6. Transformação Silver
+5. Transformação Silver
 
 Arquivo: models/silver/enriched_data.sql
 
@@ -74,7 +68,7 @@ SELECT
     ) AS age_count
 FROM bronze_data
 
-7. Agregação Gold
+6. Agregação Gold
 
 Arquivo: models/gold/summarized_data.sql
 
@@ -87,19 +81,18 @@ SELECT
 FROM silver_data
 GROUP BY age_group
 
-8. Execução dos Models
+7. Execução dos Models
 
 dbt run
 
-Se aparecer erro de modelo duplicado:
-Solução sugerida:
+Se aparecer erro de modelo duplicado, a solução sugerida é:
 
 rm -rf models/example
 # Ou renomear os arquivos duplicados
 
-9. Execução dos Testes de Qualidade de Dados
+8. Execução dos Testes de Qualidade de Dados
 
-Após rodar os modelos, execute os testes de qualidade de dados com:
+Após rodar os modelos, execute os testes de qualidade com:
 
 dbt test
 
@@ -107,7 +100,7 @@ Resultado dos Testes:
 
 PASS=12  WARN=0  ERROR=0  SKIP=0  TOTAL=12
 
-Os testes incluíram as seguintes verificações de qualidade de dados:
+Testes realizados:
 
     not_null: validação de colunas obrigatórias
 
@@ -115,8 +108,8 @@ Os testes incluíram as seguintes verificações de qualidade de dados:
 
     accepted_values: verificação de valores esperados
 
-Todos os testes foram bem-sucedidos, garantindo a integridade e qualidade dos dados em todas as camadas.
-10. Visualização da Lineage (opcional)
+Todos os testes passaram, garantindo a integridade e qualidade dos dados.
+9. Visualização da Lineage (opcional)
 
 dbt docs generate
 dbt docs serve
