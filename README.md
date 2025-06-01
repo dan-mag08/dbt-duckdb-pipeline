@@ -1,10 +1,10 @@
 Projeto: Pipeline de Dados com DBT + DuckDB
 
-Este projeto implementa um pipeline de dados utilizando o dbt (Data Build Tool) com o DuckDB como engine local. O pipeline processa dados brutos em camadas (raw → bronze → silver → gold), com organização modular e testes de qualidade.
+Este projeto implementa um pipeline de dados utilizando o dbt (Data Build Tool) com o DuckDB como engine local. O pipeline segue a arquitetura em camadas (raw → bronze → silver → gold), com organização modular, transformações SQL e testes de qualidade de dados.
 ✅ Etapas Realizadas
 1. Instalação do Ambiente e Criação do Projeto
 
-# Instale o dbt com suporte a DuckDB
+# Instale o dbt com suporte ao DuckDB
 pip install dbt-duckdb
 
 # Crie o projeto dbt
@@ -24,28 +24,28 @@ id,name,age
 2,Jane,30
 3,Bob,35
 
-E o modelo load_raw_data.sql:
+Model criado: models/raw/load_raw_data.sql
 
--- Carregar os dados do arquivo CSV para a tabela no DuckDB
+-- Carregar os dados do arquivo CSV para o DuckDB
 SELECT * 
 FROM read_csv_auto('/home/magno/dados/raw_data.csv')
 
 4. Transformação Bronze
 
-Arquivo: models/bronze/transform_data.sql
+Model: models/bronze/transform_data.sql
 
 WITH raw AS (
     SELECT * FROM {{ ref('my_first_dbt_model') }}
 )
 SELECT
     id,
-    UPPER(name) AS cleaned_name,  -- Transformação de nome para maiúsculas
+    UPPER(name) AS cleaned_name,  -- Nome em maiúsculas
     age
 FROM raw
 
 5. Transformação Silver
 
-Arquivo: models/silver/enriched_data.sql
+Model: models/silver/enriched_data.sql
 
 WITH bronze_data AS (
     SELECT * FROM {{ ref('transform_data') }}
@@ -59,18 +59,19 @@ SELECT
         WHEN age BETWEEN 30 AND 40 THEN 'adult'
         ELSE 'senior'
     END AS age_group,
-    COUNT(id) OVER (PARTITION BY 
-        CASE 
-            WHEN age < 30 THEN 'young'
-            WHEN age BETWEEN 30 AND 40 THEN 'adult'
-            ELSE 'senior'
-        END
+    COUNT(id) OVER (
+        PARTITION BY 
+            CASE 
+                WHEN age < 30 THEN 'young'
+                WHEN age BETWEEN 30 AND 40 THEN 'adult'
+                ELSE 'senior'
+            END
     ) AS age_count
 FROM bronze_data
 
 6. Agregação Gold
 
-Arquivo: models/gold/summarized_data.sql
+Model: models/gold/summarized_data.sql
 
 WITH silver_data AS (
     SELECT * FROM {{ ref('enriched_data') }}
@@ -85,49 +86,47 @@ GROUP BY age_group
 
 dbt run
 
-Se aparecer erro de modelo duplicado, a solução sugerida é:
+    Caso apareça erro de modelo duplicado, execute:
 
 rm -rf models/example
-# Ou renomear os arquivos duplicados
 
+Ou renomeie os arquivos conflitantes.
 8. Execução dos Testes de Qualidade de Dados
-
-Após rodar os modelos, execute os testes de qualidade com:
 
 dbt test
 
-Resultado dos Testes:
+Resultado esperado:
 
 PASS=12  WARN=0  ERROR=0  SKIP=0  TOTAL=12
 
-Testes realizados:
+Testes aplicados:
 
-    not_null: validação de colunas obrigatórias
+    not_null: Validação de colunas obrigatórias
 
-    unique: validação de chaves únicas
+    unique: Validação de chaves únicas
 
-    accepted_values: verificação de valores esperados
+    accepted_values: Verificação de valores esperados
 
-Todos os testes passaram, garantindo a integridade e qualidade dos dados.
-9. Visualização da Lineage (opcional)
+✅ Todos os testes foram aprovados.
+9. Visualização da Lineage (Opcional)
 
 dbt docs generate
 dbt docs serve
 
-Depois, acesse no navegador o link informado (ex: http://localhost:8000).
+Acesse no navegador o link informado (exemplo: http://localhost:8000) para visualizar o lineage dos modelos.
 ✅ Status Final
 
-Todos os modelos criados com sucesso, sem erros.
+Todos os modelos foram criados com sucesso, e os testes de qualidade foram aprovados.
 🔗 Tecnologias Utilizadas
 
     dbt-duckdb
 
-    DuckDB local
+    DuckDB (local)
 
-    SQL (camadas de transformação)
+    SQL (transformações em camadas)
 
-    Lineage via dbt docs
+    Documentação e Lineage com dbt docs
 
 👤 Autor
 
-Magno – Pipeline local com dbt + DuckDB.
+Magno – Pipeline local com dbt + DuckDB
