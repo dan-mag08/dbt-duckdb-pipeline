@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: summarized_data
+    description: "Camada GOLD com agregações por mês"
+    columns:
+
+      - name: total_count
+        description: "Total de registros por mês"
+        tests:
+          - not_null

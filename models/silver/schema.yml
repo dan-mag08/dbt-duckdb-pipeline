@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: transform_data
+    description: "Transformações iniciais dos dados: normalização e enriquecimento"
+    columns:
+      - name: id
+        description: "ID mantido da camada RAW"
+        tests:
+          - not_null
+          - unique
+
+      - name: cleaned_name
+        description: "Nome limpo (sem espaços extras)"
+        tests:
+          - not_null
+
+
+  - name: enriched_data
+    description: "Dados enriquecidos com colunas calculadas"
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+
+      - name: cleaned_name
+        tests:
+          - not_null
+
+      
+

@@ -1,0 +1,30 @@
+name: 'meu_pipeline_duckdb'
+version: '1.0.0'
+
+# Configuração do perfil, associando ao arquivo profiles.yml
+profile: 'meu_pipeline_duckdb'
+
+# Caminhos para os modelos, seeds, análises e etc.
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+# Diretórios a serem limpos com `dbt clean`
+clean-targets:         
+  - "target"
+  - "dbt_packages"
+
+# Configuração para as camadas (raw, bronze, silver, gold)
+models:
+  meu_pipeline_duckdb:
+    raw:
+      +materialized: table  # Tabelas para a camada raw
+    bronze:
+      +materialized: table  # Tabelas para a camada bronze
+    silver:
+      +materialized: table  # Tabelas para a camada silver
+    gold:
+      +materialized: table  # Tabelas para a camada gold
