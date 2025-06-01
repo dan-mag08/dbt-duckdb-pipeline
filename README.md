@@ -1,21 +1,28 @@
-Projeto: Pipeline de Dados com DBT + DuckDB
+ 🚀 Projeto: Pipeline de Dados com DBT + DuckDB
 
-Este projeto implementa um pipeline de dados utilizando o dbt (Data Build Tool) com o DuckDB como engine local. O pipeline segue a arquitetura em camadas (raw → bronze → silver → gold), com organização modular, transformações SQL e testes de qualidade de dados.
-✅ Etapas Realizadas
-1. Instalação do Ambiente e Criação do Projeto
+Este projeto demonstra a construção de um pipeline de dados local utilizando o **[dbt (Data Build Tool)](https://www.getdbt.com/)** em conjunto com o **[DuckDB](https://duckdb.org/)**.  
+O fluxo segue o modelo em camadas:  
+**Raw → Bronze → Silver → Gold**, com organização modular, transformações SQL e testes automatizados de qualidade.
 
-# Instale o dbt com suporte ao DuckDB
+---
+
+## ✅ Etapas Realizadas
+
+### 1. 🔧 Instalação do Ambiente
+
+```bash
+# Instalar o dbt com suporte ao DuckDB
 pip install dbt-duckdb
 
-# Crie o projeto dbt
+# Criar um novo projeto dbt
 dbt init meu_pipeline_duckdb
 cd meu_pipeline_duckdb
 
-2. Estrutura Inicial de Pastas e Models
+2. 📁 Estrutura de Diretórios
 
 mkdir -p models/raw models/bronze models/silver models/gold
 
-3. Carga do Dado Bruto (Raw)
+3. 🗂️ Carga de Dados Brutos (Raw)
 
 Criado o arquivo raw_data.csv com o conteúdo:
 
@@ -24,13 +31,13 @@ id,name,age
 2,Jane,30
 3,Bob,35
 
-Model criado: models/raw/load_raw_data.sql
+Model: models/raw/load_raw_data.sql
 
--- Carregar os dados do arquivo CSV para o DuckDB
+-- Carrega os dados do CSV usando DuckDB
 SELECT * 
 FROM read_csv_auto('/home/magno/dados/raw_data.csv')
 
-4. Transformação Bronze
+4. 🥉 Transformação Bronze
 
 Model: models/bronze/transform_data.sql
 
@@ -39,11 +46,13 @@ WITH raw AS (
 )
 SELECT
     id,
-    UPPER(name) AS cleaned_name,  -- Nome em maiúsculas
+    UPPER(name) AS cleaned_name,
     age
 FROM raw
 
-5. Transformação Silver
+    Transformação: nome convertido para letras maiúsculas.
+
+5. 🥈 Transformação Silver
 
 Model: models/silver/enriched_data.sql
 
@@ -69,7 +78,9 @@ SELECT
     ) AS age_count
 FROM bronze_data
 
-6. Agregação Gold
+    Categorização por faixa etária e contagem por grupo.
+
+6. 🥇 Agregação Gold
 
 Model: models/gold/summarized_data.sql
 
@@ -82,16 +93,18 @@ SELECT
 FROM silver_data
 GROUP BY age_group
 
-7. Execução dos Models
+    Agregação final dos dados por grupo etário.
+
+7. ▶️ Execução do Pipeline
 
 dbt run
 
-    Caso apareça erro de modelo duplicado, execute:
+💡 Se aparecer erro de modelo duplicado:
 
 rm -rf models/example
+# ou renomeie os arquivos duplicados
 
-Ou renomeie os arquivos conflitantes.
-8. Execução dos Testes de Qualidade de Dados
+8. 🧪 Testes de Qualidade de Dados
 
 dbt test
 
@@ -101,32 +114,35 @@ PASS=12  WARN=0  ERROR=0  SKIP=0  TOTAL=12
 
 Testes aplicados:
 
-    not_null: Validação de colunas obrigatórias
+    not_null: Colunas obrigatórias
 
-    unique: Validação de chaves únicas
+    unique: Chaves únicas
 
-    accepted_values: Verificação de valores esperados
+    accepted_values: Valores esperados
 
-✅ Todos os testes foram aprovados.
-9. Visualização da Lineage (Opcional)
+✅ Todos os testes passaram, garantindo a integridade dos dados.
+9. 📊 Visualização da Lineage (opcional)
 
 dbt docs generate
 dbt docs serve
 
-Acesse no navegador o link informado (exemplo: http://localhost:8000) para visualizar o lineage dos modelos.
-✅ Status Final
+Acesse no navegador o link exibido (ex: http://localhost:8000) para navegar na documentação interativa.
+📌 Status Final
 
-Todos os modelos foram criados com sucesso, e os testes de qualidade foram aprovados.
+✔️ Pipeline implementado com sucesso
+✔️ Testes aprovados
+✔️ Lineage disponível via dbt docs
 🔗 Tecnologias Utilizadas
 
     dbt-duckdb
 
-    DuckDB (local)
+    DuckDB (engine local)
 
     SQL (transformações em camadas)
 
-    Documentação e Lineage com dbt docs
+    Visualização com dbt docs
 
 👤 Autor
 
-Magno – Pipeline local com dbt + DuckDB
+Magno
+Pipeline local com dbt + DuckDB
